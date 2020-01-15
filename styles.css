@@ -19,8 +19,15 @@
     float: left;
     height: 100px;
     width: 100px;
+    margin: 0;
+    padding: 0;
     cursor: pointer;
     font-size: 100px;
+    font-family: sans-serif;
+}
+
+.row > div:hover {
+    background-color: bisque;
 }
 
 .top {
