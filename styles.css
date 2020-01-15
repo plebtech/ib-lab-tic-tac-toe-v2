@@ -1,0 +1,40 @@
+#board {
+    padding: 3em;
+    text-align: center;
+    /* border: 1px solid fuchsia; */
+}
+
+#status {
+
+}
+
+.row {
+    clear: both;
+    margin: 0 auto;
+    width: 302px;
+    /* border: 1px dashed fuchsia; */
+}
+
+.row > div {
+    float: left;
+    height: 100px;
+    width: 100px;
+    cursor: pointer;
+    font-size: 100px;
+}
+
+.top {
+    border-bottom: 1px solid black;
+}
+
+.bottom {
+    border-top: 1px solid black;
+}
+
+.left {
+    border-right: 1px solid black;
+}
+
+.right {
+    border-left: 1px solid black;
+}
