@@ -15,6 +15,8 @@ const WINNING_COMBOS = [
     [2,5,8]
 ];
 
+
+
 // selector for the status div.
 let status = document.querySelector('#status');
 // selector for all game 'cells'.
@@ -27,10 +29,21 @@ let gameDraw = false;
 winner = undefined;
 // move count.
 let count = 0;
-// track which cell clicked.
-let cellID;
 
-let TL = document.getElementById("cZero")
+// top row.
+let TL = document.getElementById("cZero");
+let TM = document.getElementById("cOne");
+let TR = document.getElementById("cTwo");
+//center row.
+let CL = document.getElementById("cThree");
+let CM = document.getElementById("cFour");
+let CR = document.getElementById("cFive");
+//bottom row.
+let BL = document.getElementById("cSix");
+let BM = document.getElementById("cSeven");
+let BR = document.getElementById("cEight");
+
+let grid = [ "F", "F", "F", "F", "F", "F", "F", "F", "F"];
 
 // listener for cells being clicked.
 cells.forEach(function(cell) {
@@ -40,14 +53,14 @@ cells.forEach(function(cell) {
 // MAIN METHOD.
 // handles cell being clicked.
 function cellClicked(e) {
-    cellID = e.target;
     if (checkCell(e) === false) {
         setXO(e);
         count++;
     }
+    updateGrid();
+    compareGrid();
     updateStatus();
     checkDraw();
-    console.log(TL.innerHTML);
 }
 
 // checks if a cell has been clicked yet.
@@ -66,6 +79,26 @@ function setXO(e) {
     } else {
         e.target.textContent = 'O';
     }
+}
+
+//populates array based on game board (X and O).
+function updateGrid() {
+    // top row.
+    grid[0] = TL.innerHTML;
+    grid[1] = TM.innerHTML;
+    grid[2] = TR.innerHTML;
+    // console.log(grid[0] + " " + grid[1] + " " + grid[2]);
+    // middle row.
+    grid[3] = CL.innerHTML;
+    grid[4] = CM.innerHTML;
+    grid[5] = CR.innerHTML;
+    // console.log(grid[3] + " " + grid[4] + " " + grid[5]);
+    // middle row.
+    grid[6] = BL.innerHTML;
+    grid[7] = BM.innerHTML;
+    grid[8] = BR.innerHTML;
+    // console.log(grid[6] + " " + grid[7] + " " + grid[8]);
+    // console.log("");
 }
 
 // update the status div.
