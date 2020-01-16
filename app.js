@@ -1,22 +1,3 @@
-/* TO DO:
-- populate an array to represent the game board, iterating through with every click to populate/update it.
-- restart gameboard when game is over.
-*/
-
-// winning combinations to test against.
-const WINNING_COMBOS = [
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-    [0,4,8],
-    [2,4,6],
-    [0,3,6],
-    [1,4,7],
-    [2,5,8]
-];
-
-
-
 // selector for the status div.
 let status = document.querySelector('#status');
 // selector for all game 'cells'.
@@ -26,7 +7,7 @@ let cells = document.querySelectorAll('.top, .middle, .bottom');
 let gameWon = false;
 let gameDraw = false;
 // variable for game winner (used in displaying game status).
-winner = undefined;
+let winner = "F";
 // move count.
 let count = 0;
 
@@ -34,16 +15,17 @@ let count = 0;
 let TL = document.getElementById("cZero");
 let TM = document.getElementById("cOne");
 let TR = document.getElementById("cTwo");
-//center row.
+// center row.
 let CL = document.getElementById("cThree");
 let CM = document.getElementById("cFour");
 let CR = document.getElementById("cFive");
-//bottom row.
+// bottom row.
 let BL = document.getElementById("cSix");
 let BM = document.getElementById("cSeven");
 let BR = document.getElementById("cEight");
 
-let grid = [ "F", "F", "F", "F", "F", "F", "F", "F", "F"];
+// grid to represent game board.
+let grid = ["F", "F", "F", "F", "F", "F", "F", "F", "F"];
 
 // listener for cells being clicked.
 cells.forEach(function(cell) {
@@ -58,7 +40,7 @@ function cellClicked(e) {
         count++;
     }
     updateGrid();
-    compareGrid();
+    checkCombos();
     updateStatus();
     checkDraw();
 }
@@ -81,30 +63,69 @@ function setXO(e) {
     }
 }
 
-//populates array based on game board (X and O).
+// populates array based on game board (X and O).
 function updateGrid() {
     // top row.
     grid[0] = TL.innerHTML;
     grid[1] = TM.innerHTML;
     grid[2] = TR.innerHTML;
-    // console.log(grid[0] + " " + grid[1] + " " + grid[2]);
     // middle row.
     grid[3] = CL.innerHTML;
     grid[4] = CM.innerHTML;
     grid[5] = CR.innerHTML;
-    // console.log(grid[3] + " " + grid[4] + " " + grid[5]);
     // middle row.
     grid[6] = BL.innerHTML;
     grid[7] = BM.innerHTML;
     grid[8] = BR.innerHTML;
-    // console.log(grid[6] + " " + grid[7] + " " + grid[8]);
-    // console.log("");
+}
+
+function checkCombos() {
+    // 0 1 2, top row.
+    if ((grid[0] === "X" || grid[0] === "O") && (grid[0] === grid[1] && grid [1] === grid[2])) {
+        gameWon = true;
+        winner = grid[0];
+    }
+    // 3 4 5, middle row.
+    if ((grid[3] === "X" || grid[3] === "O") && (grid[3] === grid[4] && grid [4] === grid[5])) {
+        gameWon = true;
+        winner = grid[3];
+    }
+    // 6 7 8, bottomw row.
+    if ((grid[6] === "X" || grid[6] === "O") && (grid[6] === grid[7] && grid [7] === grid[8])) {
+        gameWon = true;
+        winner = grid[6];
+    }
+    // 0 4 8, diagonal backslant.
+    if ((grid[0] === "X" || grid[0] === "O") && (grid[0] === grid[4] && grid [4] === grid[8])) {
+        gameWon = true;
+        winner = grid[0];
+    }
+    // 2 4 6, diagonal forwardslant.
+    if ((grid[2] === "X" || grid[2] === "O") && (grid[2] === grid[4] && grid [4] === grid[6])) {
+        gameWon = true;
+        winner = grid[2];
+    }
+    // 0 3 6, left column.
+    if ((grid[0] === "X" || grid[0] === "O") && (grid[0] === grid[3] && grid [3] === grid[6])) {
+        gameWon = true;
+        winner = grid[0];
+    }
+    // 1 4 7, middle column.
+    if ((grid[1] === "X" || grid[1] === "O") && (grid[1] === grid[4] && grid [4] === grid[7])) {
+        gameWon = true;
+        winner = grid[1];
+    }
+    // 2 5 8, right column.
+    if ((grid[2] === "X" || grid[2] === "O") && (grid[2] === grid[5] && grid [5] === grid[8])) {
+        gameWon = true;
+        winner = grid[2];
+    }
 }
 
 // update the status div.
 function updateStatus() {
     if (gameWon === true) {
-        status.textContent = "Game over!" + winner + " wins! Click to play again.";
+        status.textContent = "Game over! " + winner + " wins! Click to play again.";
     } else if (gameDraw === true) {
         status.textContent = "Game is a draw! Click to play again.";
     } else if (count > 0) {
