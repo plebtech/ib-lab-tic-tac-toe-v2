@@ -133,9 +133,6 @@ function updateStatus() {
     if (gameWon === true) {
         status.textContent = "Game over! " + winner + " wins! Click to play again.";
         gameOver = true;
-    } else if (gameDraw === true) {
-        status.textContent = "Game is a draw! Click to play again.";
-        gameOver = true;
     } else if (count > 0) {
         status.textContent = "Game started! Turn number: " + count;
     }
@@ -145,6 +142,7 @@ function updateStatus() {
 function checkDraw() {
     if (gameWon === false && count === 9) {
         gameDraw = true;
+        gameOver = true;
         status.textContent = "Draw! Game over. Click to play again.";
     }
 }
