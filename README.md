@@ -2,6 +2,10 @@
 ## interactive web-based game
 ### lab for Innovate Birmingham Software Development course
 
+#### version 2
+
+Streamlining previous project.
+
 #### objectives:
 * players click on a cell to make a move.
 * X is always first player.
