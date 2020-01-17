@@ -1,57 +1,26 @@
-// selector for the status div.
-let status = document.querySelector('#status');
+// BOARD INTERACTIVITY.
 // selector for all game 'cells'.
 let cells = document.querySelectorAll('.top, .middle, .bottom');
-
-// variables for whether game has been won/drawn.
-let gameWon = false;
-let gameDraw = false;
-let gameOver = false;
-// variable for game winner (used in displaying game status).
-let winner = "F";
-// move count.
-let count = 0;
-
-// creating variables for every game div:
-// top row.
-let TL = document.getElementById("cZero");
-let TM = document.getElementById("cOne");
-let TR = document.getElementById("cTwo");
-// center row.
-let CL = document.getElementById("cThree");
-let CM = document.getElementById("cFour");
-let CR = document.getElementById("cFive");
-// bottom row.
-let BL = document.getElementById("cSix");
-let BM = document.getElementById("cSeven");
-let BR = document.getElementById("cEight");
-
-// vector array to represent game board.
-let grid = ["F", "F", "F", "F", "F", "F", "F", "F", "F"];
-
 // listener for cells being clicked.
 cells.forEach(function (cell) {
     cell.addEventListener("click", cellClicked);
 });
-
-// MAIN METHOD.
-// handles cell being clicked.
+// move count.
+let count = 0;
+// main function that drives the game:
+// every click runs the logic.
 function cellClicked(e) {
     if (gameOver === true) {
-        resetBoard();
-    } else {
-        if (checkCell(e) === false) {
-            setXO(e);
-            count++;
-        }
-        updateGrid();
-        checkCombos();
-        updateStatus();
-        checkDraw();
+        boardReset();
+    } else if (checkCell(e) === false) {
+        setXO(e);
+        count++;
     }
+    boardRead();
+    boardCheck();
+    statusUpdate();
 }
-
-// checks if a cell has been clicked yet.
+// check if cell has been clicked.
 function checkCell(e) {
     let clicked = false;
     if (e.target.textContent === 'X' || e.target.textContent === 'O') {
@@ -59,8 +28,7 @@ function checkCell(e) {
     }
     return clicked;
 }
-
-// sets the value of a clicked cell to X or O based on the turn number.
+// assign game piece to clicked cell based on game turn (evens = X, odds = O).
 function setXO(e) {
     if (count % 2 === 0) {
         e.target.textContent = 'X';
@@ -69,77 +37,85 @@ function setXO(e) {
     }
 }
 
-// populates array based on game board (X and O).
-function updateGrid() {
-    // top row.
-    grid[0] = TL.innerHTML;
-    grid[1] = TM.innerHTML;
-    grid[2] = TR.innerHTML;
-    // middle row.
-    grid[3] = CL.innerHTML;
-    grid[4] = CM.innerHTML;
-    grid[5] = CR.innerHTML;
-    // middle row.
-    grid[6] = BL.innerHTML;
-    grid[7] = BM.innerHTML;
-    grid[8] = BR.innerHTML;
+// GAME LOGIC.
+let gameWon = false, gameDraw = false, gameOver = false, winner = "F";
+// 1d array to hold game cells.
+let board = ["F", "F", "F", "F", "F", "F", "F", "F", "F"];
+// populate board array based on cell contents.
+function boardRead() {
+    board[0] = document.getElementsByClassName('top left')[0].textContent;
+    board[1] = document.getElementsByClassName('top center')[0].textContent;
+    board[2] = document.getElementsByClassName('top right')[0].textContent;
+    board[3] = document.getElementsByClassName('middle left')[0].textContent;
+    board[4] = document.getElementsByClassName('middle center')[0].textContent;
+    board[5] = document.getElementsByClassName('middle right')[0].textContent;
+    board[6] = document.getElementsByClassName('bottom left')[0].textContent;
+    board[7] = document.getElementsByClassName('bottom center')[0].textContent;
+    board[8] = document.getElementsByClassName('bottom right')[0].textContent;
 }
-
-function checkCombos() {
-    // 0 1 2, top row.
-    if ((grid[0] === "X" || grid[0] === "O") && (grid[0] === grid[1] && grid[1] === grid[2])) {
-        gameWon = true;
-        winner = grid[0];
-    }
-    // 3 4 5, middle row.
-    else if ((grid[3] === "X" || grid[3] === "O") && (grid[3] === grid[4] && grid[4] === grid[5])) {
-        gameWon = true;
-        winner = grid[3];
-    }
-    // 6 7 8, bottomw row.
-    else if ((grid[6] === "X" || grid[6] === "O") && (grid[6] === grid[7] && grid[7] === grid[8])) {
-        gameWon = true;
-        winner = grid[6];
-    }
-    // 0 4 8, diagonal backslant.
-    else if ((grid[0] === "X" || grid[0] === "O") && (grid[0] === grid[4] && grid[4] === grid[8])) {
-        gameWon = true;
-        winner = grid[0];
-    }
-    // 2 4 6, diagonal forwardslant.
-    else if ((grid[2] === "X" || grid[2] === "O") && (grid[2] === grid[4] && grid[4] === grid[6])) {
-        gameWon = true;
-        winner = grid[2];
-    }
-    // 0 3 6, left column.
-    else if ((grid[0] === "X" || grid[0] === "O") && (grid[0] === grid[3] && grid[3] === grid[6])) {
-        gameWon = true;
-        winner = grid[0];
-    }
-    // 1 4 7, middle column.
-    else if ((grid[1] === "X" || grid[1] === "O") && (grid[1] === grid[4] && grid[4] === grid[7])) {
-        gameWon = true;
-        winner = grid[1];
-    }
-    // 2 5 8, right column.
-    else if ((grid[2] === "X" || grid[2] === "O") && (grid[2] === grid[5] && grid[5] === grid[8])) {
-        gameWon = true;
-        winner = grid[2];
+// check board for winning combinations.
+function boardCheck() {
+    if (gameWon === false) {
+        topCheck();
+        middleCheck();
+        bottomCheck();
+        diagCheckB();
+        diagCheckF();
+        leftCheck();
+        centerCheck();
+        rightCheck();
     }
 }
-
-// update the status div.
-function updateStatus() {
-    if (gameWon === true) {
-        status.textContent = "Game over! " + winner + " wins! Click to play again.";
-        gameOver = true;
-    } else if (count > 0) {
-        status.textContent = "Game started! Turn number: " + count;
+function topCheck() { // 0 1 2.
+    if ((board[0] === "X" || board[0] === "O") && (board[0] === board[1] && board[1] === board[2])) {
+        gameWon = true;
+        winner = board[0];
     }
 }
-
-// checks to see if the game has ended in a draw.
-function checkDraw() {
+function middleCheck() { // 3 4 5.
+    if ((board[3] === "X" || board[3] === "O") && (board[3] === board[4] && board[4] === board[5])) {
+        gameWon = true;
+        winner = board[3];
+    }
+}
+function bottomCheck() { // 6 7 8.
+    if ((board[6] === "X" || board[6] === "O") && (board[6] === board[7] && board[7] === board[8])) {
+        gameWon = true;
+        winner = board[6];
+    }
+}
+function diagCheckB() { // 0 4 8.
+    if ((board[0] === "X" || board[0] === "O") && (board[0] === board[4] && board[4] === board[8])) {
+        gameWon = true;
+        winner = board[0];
+    }
+}
+function diagCheckF() { // 2 4 6.
+    if ((board[2] === "X" || board[2] === "O") && (board[2] === board[4] && board[4] === board[6])) {
+        gameWon = true;
+        winner = board[2];
+    }
+}
+function leftCheck() { // 0 3 6.
+    if ((board[0] === "X" || board[0] === "O") && (board[0] === board[3] && board[3] === board[6])) {
+        gameWon = true;
+        winner = board[0];
+    }
+}
+function centerCheck() { // 1 4 7.
+    if ((board[1] === "X" || board[1] === "O") && (board[1] === board[4] && board[4] === board[7])) {
+        gameWon = true;
+        winner = board[1];
+    }
+}
+function rightCheck() { // 2 5 8..
+    if ((board[2] === "X" || board[2] === "O") && (board[2] === board[5] && board[5] === board[8])) {
+        gameWon = true;
+        winner = board[2];
+    }
+}
+// check for draw.
+function drawCheck() {
     if (gameWon === false && count === 9) {
         gameDraw = true;
         gameOver = true;
@@ -147,18 +123,30 @@ function checkDraw() {
     }
 }
 
-// resets board.
-function resetBoard() {
+// NICETIES.
+// errata (updating status, resetting board).
+// selector for the status div.
+let status = document.querySelector('#status');
+// update status div.
+function statusUpdate() {
+    if (gameWon === true && gameOver === false) {
+        status.textContent = "Game over! " + winner + " wins! Click to play again.";
+        gameOver = true;
+    }
+    else if (count > 0 && count < 9) {
+        status.textContent = "Game started! Turn number: " + count;
+    }
+    else if (gameWon === false && count === 9) {
+        status.textContent = "Draw! Game over. Click to play again.";
+        gameDraw = true;
+        gameOver = true;
+    }
+}
+function boardReset() {
     status.textContent = "Game reset. Click the board to begin!";
-    cZero.textContent = "";
-    cOne.textContent = "";
-    cTwo.textContent = "";
-    cThree.textContent = "";
-    cFour.textContent = "";
-    cFive.textContent = "";
-    cSix.textContent = "";
-    cSeven.textContent = "";
-    cEight.textContent = "";
+    cells.forEach(function (cell) {
+        cell.textContent = "";
+    });
     gameWon = false;
     gameDraw = false;
     gameOver = false;
