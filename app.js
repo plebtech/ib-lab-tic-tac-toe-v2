@@ -10,15 +10,25 @@ let count = 0;
 // main function that drives the game:
 // every click runs the logic.
 function cellClicked(e) {
+    playerCheck();
     if (gameOver === true) {
         boardReset();
     } else if (checkCell(e) === false) {
-        setXO(e);
+        e.target.textContent = currentPlayer;
         count++;
     }
     boardRead();
-    boardCheck();
+    winCheck();
     statusUpdate();
+}
+// determine current player.
+let currentPlayer = "F";
+function playerCheck() {
+    if (count % 2 === 0) {
+        currentPlayer = "X";
+    } else {
+        currentPlayer = "O";
+    }
 }
 // check if cell has been clicked.
 function checkCell(e) {
@@ -27,14 +37,6 @@ function checkCell(e) {
         clicked = true;
     }
     return clicked;
-}
-// assign game piece to clicked cell based on game turn (evens = X, odds = O).
-function setXO(e) {
-    if (count % 2 === 0) {
-        e.target.textContent = 'X';
-    } else {
-        e.target.textContent = 'O';
-    }
 }
 
 // GAME LOGIC.
@@ -47,73 +49,30 @@ function boardRead() {
         board[i] = cells[i].textContent;
     }
 }
-// check board for winning combinations.
-function boardCheck() {
-    if (gameWon === false) {
-        topCheck();
-        middleCheck();
-        bottomCheck();
-        diagCheckB();
-        diagCheckF();
-        leftCheck();
-        centerCheck();
-        rightCheck();
-    }
-}
-function topCheck() { // 0 1 2.
-    if ((board[0] === "X" || board[0] === "O") && (board[0] === board[1] && board[1] === board[2])) {
-        gameWon = true;
-        winner = board[0];
-    }
-}
-function middleCheck() { // 3 4 5.
-    if ((board[3] === "X" || board[3] === "O") && (board[3] === board[4] && board[4] === board[5])) {
-        gameWon = true;
-        winner = board[3];
-    }
-}
-function bottomCheck() { // 6 7 8.
-    if ((board[6] === "X" || board[6] === "O") && (board[6] === board[7] && board[7] === board[8])) {
-        gameWon = true;
-        winner = board[6];
-    }
-}
-function diagCheckB() { // 0 4 8.
-    if ((board[0] === "X" || board[0] === "O") && (board[0] === board[4] && board[4] === board[8])) {
-        gameWon = true;
-        winner = board[0];
-    }
-}
-function diagCheckF() { // 2 4 6.
-    if ((board[2] === "X" || board[2] === "O") && (board[2] === board[4] && board[4] === board[6])) {
-        gameWon = true;
-        winner = board[2];
-    }
-}
-function leftCheck() { // 0 3 6.
-    if ((board[0] === "X" || board[0] === "O") && (board[0] === board[3] && board[3] === board[6])) {
-        gameWon = true;
-        winner = board[0];
-    }
-}
-function centerCheck() { // 1 4 7.
-    if ((board[1] === "X" || board[1] === "O") && (board[1] === board[4] && board[4] === board[7])) {
-        gameWon = true;
-        winner = board[1];
-    }
-}
-function rightCheck() { // 2 5 8..
-    if ((board[2] === "X" || board[2] === "O") && (board[2] === board[5] && board[5] === board[8])) {
-        gameWon = true;
-        winner = board[2];
-    }
-}
-// check for draw.
-function drawCheck() {
-    if (gameWon === false && count === 9) {
-        gameDraw = true;
-        gameOver = true;
-        status.textContent = "Draw! Game over. Click to play again.";
+let combos = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+]
+function winCheck(){
+    for (let i = 0; i < combos.length; i++) {
+        let combo = combos[i];
+        let sum = 0;
+        for (let j = 0; j < combo.length; j++){
+            if (cells[combo[j]].textContent === currentPlayer){
+                sum++
+            }
+
+            if (sum === 3){
+                gameWon = true;
+                winner = currentPlayer;
+            }
+        }
     }
 }
 
