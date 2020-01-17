@@ -40,18 +40,12 @@ function setXO(e) {
 // GAME LOGIC.
 let gameWon = false, gameDraw = false, gameOver = false, winner = "F";
 // 1d array to hold game cells.
-let board = ["F", "F", "F", "F", "F", "F", "F", "F", "F"];
+let board = [];
 // populate board array based on cell contents.
 function boardRead() {
-    board[0] = document.getElementsByClassName('top left')[0].textContent;
-    board[1] = document.getElementsByClassName('top center')[0].textContent;
-    board[2] = document.getElementsByClassName('top right')[0].textContent;
-    board[3] = document.getElementsByClassName('middle left')[0].textContent;
-    board[4] = document.getElementsByClassName('middle center')[0].textContent;
-    board[5] = document.getElementsByClassName('middle right')[0].textContent;
-    board[6] = document.getElementsByClassName('bottom left')[0].textContent;
-    board[7] = document.getElementsByClassName('bottom center')[0].textContent;
-    board[8] = document.getElementsByClassName('bottom right')[0].textContent;
+    for (i = 0; i < cells.length; i++) {
+        board[i] = cells[i].textContent;
+    }
 }
 // check board for winning combinations.
 function boardCheck() {
