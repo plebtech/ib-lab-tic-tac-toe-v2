@@ -104,6 +104,7 @@ function boardReset() {
     status.textContent = "Game reset. Click the board to begin!";
     cells.forEach(function (cell) {
         cell.textContent = "";
+        cell.classList.remove("highlight");
     });
     gameWon = false;
     gameDraw = false;
