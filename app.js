@@ -59,18 +59,23 @@ let combos = [
     [0, 4, 8],
     [2, 4, 6]
 ]
-function winCheck(){
+function winCheck() {
     for (let i = 0; i < combos.length; i++) {
         let combo = combos[i];
         let sum = 0;
-        for (let j = 0; j < combo.length; j++){
-            if (cells[combo[j]].textContent === currentPlayer){
-                sum++
+        for (let j = 0; j < combo.length; j++) {
+            let wc = [];
+            if (cells[combo[j]].textContent === currentPlayer) {
+                sum++;
+                wc = combos[i];
             }
-
-            if (sum === 3){
+            if (sum === 3) {
                 gameWon = true;
                 winner = currentPlayer;
+                // highlight winning combo.
+                for (let r in wc) {
+                    cells[wc[r]].className += " highlight";
+                }
             }
         }
     }

@@ -46,3 +46,8 @@
 .right {
     border-left: 1px solid black;
 }
+
+.highlight {
+    background-color: crimson;
+    color: white;
+}
